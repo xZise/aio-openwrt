@@ -27,7 +27,7 @@ class Ubus(UbusInterface):
     def _client(self) -> "Ubus":
         return self
 
-    async def close(self):
+    async def close(self) -> None:
         if self._http_session:
             await self._http_session.close()
             self._http_session = None
@@ -36,7 +36,7 @@ class Ubus(UbusInterface):
         self._http_session = aiohttp.ClientSession(timeout=self._timeout)
         return self
 
-    async def __aexit__(self, exc_type, exc, tb):
+    async def __aexit__(self, exc_type, exc, tb) -> None:
         await self.close()
 
     async def _api_call(
@@ -99,7 +99,7 @@ class Ubus(UbusInterface):
             case _:
                 raise ValueError(f"Unknown status code {status_code}")
 
-    async def login(self):
+    async def login(self) -> None:
         self.session_id: str | None = None
         result = await self.session.login(username=self.user, password=self.password)
         self.session_id = result.get("ubus_rpc_session")
