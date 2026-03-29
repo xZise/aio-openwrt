@@ -71,5 +71,10 @@ To list the objects directly use `list()`:
 await ubus.list("hostapd.*")
 ```
 
+Typed wrappers with subscript access can be iterated over using `list_children()`:
+```python
+await ubus.hostapd.list_children()
+```
+
 ## Permissions
 Depending on the device configuration, most features require authentication first. The authenticated user must be configured in `/etc/config/rpcd` with a corresponding ACL file in `/usr/share/rpcd/acl.d/` granting the necessary `ubus` permissions. See the [OpenWRT wiki](https://openwrt.org/docs/techref/ubus) for details.
