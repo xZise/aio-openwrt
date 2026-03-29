@@ -1,33 +1,24 @@
 from typing import Any, Coroutine
 
-from ._utils import UbusInterface, ubus_method, ubus_property
+from ._utils import UbusInterface, WrapperBase, ubus_method, ubus_property
 
 
-class Network:
-    class Device:
-        def __init__(self, client: UbusInterface) -> None:
-            self._client = client
-
+class Network(WrapperBase):
+    class Device(WrapperBase):
         @ubus_method
         def status(self, *, name: str | None = None) -> Coroutine[Any, Any, dict]: ...
 
-    class Interface:
-        class Entry:
+    class Interface(WrapperBase):
+        class Entry(WrapperBase):
             def __init__(self, client: UbusInterface, key: str) -> None:
-                self._client = client
+                super().__init__(client)
                 self._key = key
 
             @ubus_method
             def status(self) -> Coroutine[Any, Any, dict]: ...
 
-        def __init__(self, client: UbusInterface) -> None:
-            self._client = client
-
         def __getitem__(self, key) -> "Network.Interface.Entry":
             return Network.Interface.Entry(self._client, key)
-
-    def __init__(self, client: UbusInterface) -> None:
-        self._client = client
 
     device = ubus_property(Device)
     interface = ubus_property(Interface)

@@ -8,6 +8,11 @@ class UbusInterface(Protocol):
     ) -> dict: ...
 
 
+class WrapperBase:
+    def __init__(self, client: UbusInterface) -> None:
+        self._client = client
+
+
 def ubus_method(func):
     @functools.wraps(func)
     def wrapper(self, **kwargs) -> Coroutine[Any, Any, dict]:

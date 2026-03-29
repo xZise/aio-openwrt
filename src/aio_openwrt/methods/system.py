@@ -1,12 +1,9 @@
 from typing import Any, Coroutine
 
-from ._utils import UbusInterface, ubus_method
+from ._utils import WrapperBase, ubus_method
 
 
-class System:
-    def __init__(self, client: UbusInterface) -> None:
-        self._client = client
-
+class System(WrapperBase):
     @ubus_method
     def board(self) -> Coroutine[Any, Any, dict]: ...
 

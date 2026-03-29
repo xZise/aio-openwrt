@@ -1,12 +1,9 @@
 from typing import Any, Coroutine
 
-from ._utils import UbusInterface, ubus_method
+from ._utils import WrapperBase, ubus_method
 
 
-class Session:
-    def __init__(self, client: UbusInterface) -> None:
-        self._client = client
-
+class Session(WrapperBase):
     @ubus_method
     def login(self, *, username: str, password: str) -> Coroutine[Any, Any, dict]: ...
 
