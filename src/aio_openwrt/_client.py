@@ -39,8 +39,8 @@ class Ubus(UbusInterface):
     async def __aexit__(self, exc_type, exc, tb):
         await self.close()
 
-    async def call(
-        self, path: str, method: str, message: dict[str, Any] | None = None
+    async def _api_call(
+        self, api_method: str, path: str, *additional_parameters: str | dict
     ) -> dict:
         if not self._http_session:
             self._http_session = aiohttp.ClientSession(timeout=self._timeout)
@@ -48,8 +48,8 @@ class Ubus(UbusInterface):
         json = {
             "jsonrpc": "2.0",
             "id": self.id,
-            "method": "call",
-            "params": [self.session_id or EMPTY_SESSION, path, method, message or {}],
+            "method": api_method,
+            "params": [self.session_id or EMPTY_SESSION, path, *additional_parameters],
         }
         _LOGGER.debug("Send POST with following data: %s", json)
         self.id += 1
@@ -77,7 +77,15 @@ class Ubus(UbusInterface):
                 raise PermissionError(error_message)
             raise ConnectionError(error_message)
 
-        result = response_json["result"]
+        return response_json["result"]
+
+    async def list(self, path: str) -> dict:
+        return await self._api_call("list", path)
+
+    async def call(
+        self, path: str, method: str, message: dict[str, Any] | None = None
+    ) -> dict:
+        result = await self._api_call("call", path, method, message or {})
         status_code = result[0]
         match status_code:
             case 0:

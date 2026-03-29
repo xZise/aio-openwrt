@@ -65,5 +65,11 @@ For dynamically named entries such as network interfaces, use subscript notation
 await ubus.network.interface["wan"].status()
 ```
 
+### Listing objects
+To list the objects directly use `list()`:
+```python
+await ubus.list("hostapd.*")
+```
+
 ## Permissions
 Depending on the device configuration, most features require authentication first. The authenticated user must be configured in `/etc/config/rpcd` with a corresponding ACL file in `/usr/share/rpcd/acl.d/` granting the necessary `ubus` permissions. See the [OpenWRT wiki](https://openwrt.org/docs/techref/ubus) for details.
