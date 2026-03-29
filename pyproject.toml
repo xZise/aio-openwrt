@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aio-openwrt"
+dynamic = ["version"]
+description = "Async Python library for interfacing with OpenWRT via ubus"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Fabian Neundorf", email = "CommodoreFabianus@gmx.de" }
+]
+keywords = ["openwrt", "ubus", "async", "aiohttp", "homeassistant"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Home Automation",
+    "Topic :: System :: Networking",
+    "Framework :: AsyncIO",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aiohttp>=3.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "aioresponses",   # for mocking aiohttp in tests
+]
+
+[project.urls]
+Homepage = "https://github.com/xZise/aio-openwrt"
+Repository = "https://github.com/xZise/aio-openwrt"
+Issues = "https://github.com/xZise/aio-openwrt/issues"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/aio_openwrt/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aio_openwrt"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
