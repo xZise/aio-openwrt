@@ -17,6 +17,7 @@ class Ubus(UbusInterface):
         self.user = user
         self.password = password
         self.id = 1
+        self.verify_ssl = True
         self.session_id: str | None = None
         self.ubus_access: dict[str, list[str]] = {}
         self._timeout = aiohttp.ClientTimeout(timeout)
@@ -52,7 +53,9 @@ class Ubus(UbusInterface):
         }
         _LOGGER.debug("Send POST with following data: %s", json)
         self.id += 1
-        async with self._http_session.post(self.url, json=json) as resp:
+        async with self._http_session.post(
+            self.url, json=json, ssl=self.verify_ssl
+        ) as resp:
             response_json: dict = await resp.json()
 
         _LOGGER.debug("Response was: %s", response_json)
