@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 import aiohttp
@@ -6,6 +7,8 @@ from . import methods
 from .methods._utils import UbusInterface, ubus_property
 
 EMPTY_SESSION = "00000000000000000000000000000000"
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class Ubus(UbusInterface):
@@ -47,10 +50,12 @@ class Ubus(UbusInterface):
             "method": "call",
             "params": [self.session_id or EMPTY_SESSION, path, method, message or {}],
         }
+        _LOGGER.debug("Send POST with following data: %s", json)
         self.id += 1
         async with self._http_session.post(self.url, json=json) as resp:
             response_json: dict = await resp.json()
 
+        _LOGGER.debug("Response was: %s", response_json)
         error = response_json.get("error")
         if error:
             raw_error_message = error.get("message", "")
