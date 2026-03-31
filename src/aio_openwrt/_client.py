@@ -60,7 +60,7 @@ class Ubus(UbusInterface):
 
         _LOGGER.debug("Response was: %s", response_json)
         error = response_json.get("error")
-        if error:
+        if error is not None:
             raw_error_message = error.get("message", "")
             if "code" in error:
                 error_code = f"Code: {error['code']}"
