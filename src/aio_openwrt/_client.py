@@ -105,6 +105,7 @@ class Ubus(UbusInterface):
         self.session_id = result.get("ubus_rpc_session")
         self.ubus_access = result.get("acls", {}).get("ubus", {})
 
+    file = ubus_property(methods.File)
     hostapd = ubus_property(methods.Hostapd)
     network = ubus_property(methods.Network)
     session = ubus_property(methods.Session)

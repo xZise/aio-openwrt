@@ -7,7 +7,7 @@ class Entry(WrapperBase):
     def __init__(self, parent: UbusInterface | WrapperBase, key: str) -> None:
         super().__init__(parent, key)
 
-    @ubus_method
+    @ubus_method()
     def get_clients(self) -> Coroutine[Any, Any, dict]: ...
 
 

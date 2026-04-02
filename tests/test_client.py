@@ -201,6 +201,16 @@ class TestSessionLifecycle:
 
 
 # ---------------------------------------------------------------------------
+# ubus_method with keys
+# ---------------------------------------------------------------------------
+class TestUbusMethodWithKeys:
+    async def test_ubus_result_with_keys(self, ubus):
+        with patch_post(ok_result(0, {"data": "Contents"})):
+            result = await ubus.file.read(path="/etc/zero")
+        assert result == "Contents"
+
+
+# ---------------------------------------------------------------------------
 # ubus_property
 # ---------------------------------------------------------------------------
 

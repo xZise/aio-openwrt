@@ -30,7 +30,7 @@ def make_client(return_value: dict | None = None) -> AsyncMock:
 class TestUbusMethodPathDerivation:
     async def test_simple_path(self):
         class System(WrapperBase):
-            @ubus_method
+            @ubus_method()
             def board(self) -> Coroutine[None, Any, Any]: ...
 
         client = make_client()
@@ -40,7 +40,7 @@ class TestUbusMethodPathDerivation:
     async def test_nested_path(self):
         class Network(WrapperBase):
             class Device(WrapperBase):
-                @ubus_method
+                @ubus_method()
                 def status(self) -> Coroutine[None, Any, Any]: ...
 
             device = ubus_property(Device)
@@ -51,7 +51,7 @@ class TestUbusMethodPathDerivation:
 
     async def test_path_is_lowercase(self):
         class MyService(WrapperBase):
-            @ubus_method
+            @ubus_method()
             def MyMethod(self) -> Coroutine[None, Any, Any]: ...
 
         client = make_client()
@@ -64,7 +64,7 @@ class TestUbusMethodPathDerivation:
 
         class Network(WrapperBase):
             class Entry(WrapperBase):
-                @ubus_method
+                @ubus_method()
                 def status(self) -> Coroutine[None, Any, Any]: ...
 
             def __getitem__(self, key):
@@ -83,7 +83,7 @@ class TestUbusMethodPathDerivation:
 class TestUbusMethodKwargsFiltering:
     async def test_none_kwargs_filtered(self):
         class Svc(WrapperBase):
-            @ubus_method
+            @ubus_method()
             def query(
                 self, *, name: str | None = None, value: str | None = None
             ) -> Coroutine[None, Any, Any]: ...
@@ -94,7 +94,7 @@ class TestUbusMethodKwargsFiltering:
 
     async def test_all_kwargs_none_sends_empty_dict(self):
         class Svc(WrapperBase):
-            @ubus_method
+            @ubus_method()
             def query(
                 self, *, name: str | None = None
             ) -> Coroutine[None, Any, Any]: ...
@@ -105,7 +105,7 @@ class TestUbusMethodKwargsFiltering:
 
     async def test_all_kwargs_present(self):
         class Svc(WrapperBase):
-            @ubus_method
+            @ubus_method()
             def query(self, *, a: str, b: str) -> Coroutine[None, Any, Any]: ...
 
         client = make_client()
@@ -121,7 +121,7 @@ class TestUbusMethodKwargsFiltering:
 class TestUbusMethodReturnValue:
     async def test_returns_client_call_result(self):
         class Svc(WrapperBase):
-            @ubus_method
+            @ubus_method()
             def info(self) -> Coroutine[None, Any, Any]: ...
 
         expected = {"key": "value"}

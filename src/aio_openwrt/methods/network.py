@@ -14,13 +14,13 @@ class InterfaceEntry(WrapperBase):
         super().__init__(client)
         self._key = key
 
-    @ubus_method
+    @ubus_method()
     def status(self) -> Coroutine[Any, Any, dict]: ...
 
 
 class Network(WrapperBase):
     class Device(WrapperBase):
-        @ubus_method
+        @ubus_method()
         def status(self, *, name: str | None = None) -> Coroutine[Any, Any, dict]: ...
 
     class Interface(WrapperListBase):

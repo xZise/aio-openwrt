@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import functools
 from abc import abstractmethod
-from typing import Any, Coroutine, Generic, Iterable, Protocol, Type, TypeVar
+from typing import Any, Generic, Iterable, Protocol, Type, TypeVar
 
 
 class UbusInterface(Protocol):
@@ -49,13 +49,21 @@ class WrapperListBase(WrapperBase, Generic[TElement]):
         return (self[key[len(self._path) + 1 :]] for key in list_result.keys())
 
 
-def ubus_method(func):
-    @functools.wraps(func)
-    def wrapper(self: WrapperBase, **kwargs) -> Coroutine[Any, Any, dict]:
-        params = {key: value for (key, value) in kwargs.items() if value is not None}
-        return self._client.call(self._path, func.__name__, params)
+def ubus_method(*path: str):
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(self: WrapperBase, **kwargs) -> Any:
+            params = {
+                key: value for (key, value) in kwargs.items() if value is not None
+            }
+            result = await self._client.call(self._path, func.__name__, params)
+            for segment in path:
+                result = result[segment]
+            return result
 
-    return wrapper
+        return wrapper
+
+    return decorator
 
 
 class _ClientConstructible(Protocol):
