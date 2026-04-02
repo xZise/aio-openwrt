@@ -1,16 +1,19 @@
-"""Tests for aio_openwrt.methods._utils — ubus_method decorator."""
+"""Tests for aio_openwrt.methods._utils — ubus_method() decorator."""
 
 from typing import Any, Coroutine
-
-import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from aio_openwrt.methods._utils import UbusInterface, WrapperBase, ubus_method, ubus_property
-
+from aio_openwrt.methods._utils import (
+    UbusInterface,
+    WrapperBase,
+    ubus_method,
+    ubus_property,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def make_client(return_value: dict | None = None) -> AsyncMock:
     """Return a mock UbusInterface whose call() resolves immediately."""
@@ -23,8 +26,8 @@ def make_client(return_value: dict | None = None) -> AsyncMock:
 # Path derivation from __qualname__
 # ---------------------------------------------------------------------------
 
+
 class TestUbusMethodPathDerivation:
-    # @pytest.mark.asyncio
     async def test_simple_path(self):
         class System(WrapperBase):
             @ubus_method
@@ -34,7 +37,6 @@ class TestUbusMethodPathDerivation:
         await System(client).board()
         client.call.assert_called_once_with("system", "board", {})
 
-    # @pytest.mark.asyncio
     async def test_nested_path(self):
         class Network(WrapperBase):
             class Device(WrapperBase):
@@ -47,7 +49,6 @@ class TestUbusMethodPathDerivation:
         await Network(client).device.status()
         client.call.assert_called_once_with("network.device", "status", {})
 
-    # @pytest.mark.asyncio
     async def test_path_is_lowercase(self):
         class MyService(WrapperBase):
             @ubus_method
@@ -58,9 +59,9 @@ class TestUbusMethodPathDerivation:
         path_used = client.call.call_args[0][0]
         assert path_used == path_used.lower()
 
-    # @pytest.mark.asyncio
     async def test_key_substituted_into_path(self):
         """When self._key is set, it should be appended to the parent path."""
+
         class Network(WrapperBase):
             class Entry(WrapperBase):
                 @ubus_method
@@ -68,7 +69,6 @@ class TestUbusMethodPathDerivation:
 
             def __getitem__(self, key):
                 return Network.Entry(self, key)
-                
 
         client = make_client()
         await Network(client)["wan"].status()
@@ -79,28 +79,30 @@ class TestUbusMethodPathDerivation:
 # kwargs filtering
 # ---------------------------------------------------------------------------
 
+
 class TestUbusMethodKwargsFiltering:
-    # @pytest.mark.asyncio
     async def test_none_kwargs_filtered(self):
         class Svc(WrapperBase):
             @ubus_method
-            def query(self, *, name: str | None = None, value: str | None = None) -> Coroutine[None, Any, Any]: ...
+            def query(
+                self, *, name: str | None = None, value: str | None = None
+            ) -> Coroutine[None, Any, Any]: ...
 
         client = make_client()
         await Svc(client).query(name="lan", value=None)
         client.call.assert_called_once_with("svc", "query", {"name": "lan"})
 
-    # @pytest.mark.asyncio
     async def test_all_kwargs_none_sends_empty_dict(self):
         class Svc(WrapperBase):
             @ubus_method
-            def query(self, *, name: str | None = None) -> Coroutine[None, Any, Any]: ...
+            def query(
+                self, *, name: str | None = None
+            ) -> Coroutine[None, Any, Any]: ...
 
         client = make_client()
         await Svc(client).query(name=None)
         client.call.assert_called_once_with("svc", "query", {})
 
-    # @pytest.mark.asyncio
     async def test_all_kwargs_present(self):
         class Svc(WrapperBase):
             @ubus_method
@@ -115,8 +117,8 @@ class TestUbusMethodKwargsFiltering:
 # Return value
 # ---------------------------------------------------------------------------
 
+
 class TestUbusMethodReturnValue:
-    # @pytest.mark.asyncio
     async def test_returns_client_call_result(self):
         class Svc(WrapperBase):
             @ubus_method
