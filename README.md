@@ -78,3 +78,13 @@ await ubus.hostapd.list_children()
 
 ## Permissions
 Depending on the device configuration, most features require authentication first. The authenticated user must be configured in `/etc/config/rpcd` with a corresponding ACL file in `/usr/share/rpcd/acl.d/` granting the necessary `ubus` permissions. See the [OpenWRT wiki](https://openwrt.org/docs/techref/ubus) for details.
+
+## Development
+
+Install dependencies:
+```sh
+pip install -e ".[dev]"
+pre-commit install
+```
+
+This will check and format using [ruff](https://docs.astral.sh/ruff/) the code before committing.
