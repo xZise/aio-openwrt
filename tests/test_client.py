@@ -105,7 +105,7 @@ class TestCallStatusCodes:
 
     async def test_status_6_invalid_credentials(self, ubus):
         with patch_post(ok_result(6)):
-            with pytest.raises(ValueError, match="Invalid credentials"):
+            with pytest.raises(PermissionError):
                 await ubus.call("system", "board")
 
     async def test_unknown_status_code(self, ubus):

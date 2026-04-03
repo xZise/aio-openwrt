@@ -95,7 +95,7 @@ class Ubus(UbusInterface):
             case 3:
                 raise ValueError("Invalid method")
             case 6:
-                raise ValueError("Invalid credentials")
+                raise PermissionError()
             case _:
                 raise ValueError(f"Unknown status code {status_code}")
 
