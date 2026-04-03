@@ -27,13 +27,6 @@ class WrapperBase:
             self._client = parent
             self._path = name
 
-    # def list_children(self, filter: str = "*") -> Coroutine[dict, Any, Any]:
-    #     path = f"{self.__class__.__qualname__}.{filter}"
-    #     return self._client.list(path)
-
-    # def list(self) -> Coroutine[dict, Any, Any]:
-    #     return self._client.list(self.__class__.__qualname__)
-
 
 TElement = TypeVar("TElement", bound=WrapperBase)
 
