@@ -93,6 +93,11 @@ class TestCallStatusCodes:
             result = await ubus.call("system", "board")
         assert result == {"hostname": "OpenWrt"}
 
+    async def test_status_0_returns_no_data(self, ubus):
+        with patch_post(ok_result(0)):
+            result = await ubus.call("system", "board")
+        assert result == {}
+
     async def test_status_2_invalid_arguments(self, ubus):
         with patch_post(ok_result(2)):
             with pytest.raises(ValueError, match="Invalid arguments"):
@@ -127,17 +132,19 @@ class TestLogin:
         assert ubus.session_id == session_id
 
     async def test_login_sets_ubus_access(self, ubus):
+        session_id = "01234567890123456789012345678901"
         acls = {"network": ["status"], "system": ["board"]}
         with patch_post(
             ok_result(
                 0,
                 {
-                    "ubus_rpc_session": "01234567890123456789012345678901",
+                    "ubus_rpc_session": session_id,
                     "acls": {"ubus": acls},
                 },
             )
         ):
             await ubus.login()
+        assert ubus.session_id == session_id
         assert ubus.ubus_access == acls
 
     async def test_login_clears_session_before_call(self, ubus):

@@ -89,7 +89,7 @@ class Ubus(UbusInterface):
         status_code = result[0]
         match status_code:
             case 0:
-                return result[1]
+                return result[1] if len(result) == 2 else {}
             case 2:
                 raise ValueError("Invalid arguments")
             case 3:
